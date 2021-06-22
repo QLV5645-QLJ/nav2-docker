@@ -45,7 +45,7 @@ sudo grep -F "export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/dashing/share
 sudo grep -F "export GAZEBO_HOSTNAME=localhost" ~/.bashrc || sudo echo "export GAZEBO_HOSTNAME=localhost" >> ~/.bashrc
 sudo grep -F "source /opt/ros/dashing/setup.bash" ~/.bashrc || sudo echo "source /opt/ros/dashing/setup.bash" >> ~/.bashrc
 sudo grep -F ". /opt/ros/dashing/setup.bash" ~/.bashrc || sudo echo ". /opt/ros/dashing/setup.bash" >> ~/.bashrc
-
+sudo grep -F "export PATH=$PATH:/usr/libexec/" ~/.bashrc || sudo echo " export PATH=$PATH:/usr/libexec/" >> ~/.bashrc
 # add `--skip` to startup args, to skip the VNC startup procedure
 if [[ $1 =~ -s|--skip ]]; then
     echo -e "\n\n------------------ SKIP VNC STARTUP -----------------"
@@ -100,13 +100,13 @@ PID_SUB=$!
 
 echo -e "\n------------------ start VNC server ------------------------"
 echo "remove old vnc locks to be a reattachable container"
-vncserver -kill $DISPLAY &> $STARTUPDIR/vnc_startup.log \
+/usr/libexec/vncserver -kill $DISPLAY &> $STARTUPDIR/vnc_startup.log \
     || rm -rfv /tmp/.X*-lock /tmp/.X11-unix &> $STARTUPDIR/vnc_startup.log \
     || echo "no locks present"
 
 echo -e "start vncserver with param: VNC_COL_DEPTH=$VNC_COL_DEPTH, VNC_RESOLUTION=$VNC_RESOLUTION\n..."
 if [[ $DEBUG == true ]]; then echo "vncserver $DISPLAY -depth $VNC_COL_DEPTH -geometry $VNC_RESOLUTION -SecurityTypes None"; fi
-vncserver $DISPLAY -depth $VNC_COL_DEPTH -geometry $VNC_RESOLUTION -SecurityTypes None &> $STARTUPDIR/no_vnc_startup.log
+/usr/libexec/vncserver $DISPLAY -depth $VNC_COL_DEPTH -geometry $VNC_RESOLUTION -SecurityTypes None &> $STARTUPDIR/no_vnc_startup.log
 echo -e "start window manager\n..."
 $HOME/wm_startup.sh &> $STARTUPDIR/wm_startup.log
 
